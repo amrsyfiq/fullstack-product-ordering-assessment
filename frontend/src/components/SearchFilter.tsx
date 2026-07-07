@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Button,
   Card,
@@ -10,18 +9,31 @@ import {
   Label,
 } from 'reactstrap';
 import { getBrands, getCategories, getColors } from '../api/client';
+import { Category, ProductFilters } from '../types';
 
-const EMPTY = { name: '', categoryId: '', brand: '', color: '' };
+interface SearchFilterProps {
+  onSearch: (criteria: ProductFilters) => void;
+}
+
+/** Draft form state — all values are strings while editing. */
+interface Draft {
+  name: string;
+  categoryId: string;
+  brand: string;
+  color: string;
+}
+
+const EMPTY: Draft = { name: '', categoryId: '', brand: '', color: '' };
 
 /**
  * Left hand search filter. Holds its own draft state and only lifts the
  * criteria up when the user clicks Search (matching the wireframe behaviour).
  */
-function SearchFilter({ onSearch }) {
-  const [draft, setDraft] = useState(EMPTY);
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
-  const [colors, setColors] = useState([]);
+function SearchFilter({ onSearch }: SearchFilterProps) {
+  const [draft, setDraft] = useState<Draft>(EMPTY);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
+  const [colors, setColors] = useState<string[]>([]);
 
   // Load the static dropdown options once.
   useEffect(() => {
@@ -35,29 +47,30 @@ function SearchFilter({ onSearch }) {
 
   // Brands depend on the selected category.
   useEffect(() => {
-    const categoryId = draft.categoryId || undefined;
+    const categoryId = draft.categoryId ? Number(draft.categoryId) : undefined;
     getBrands(categoryId)
       .then(setBrands)
       .catch(() => setBrands([]));
   }, [draft.categoryId]);
 
-  const update = (field) => (e) => {
-    const value = e.target.value;
-    setDraft((prev) => {
-      const next = { ...prev, [field]: value };
-      // Reset brand when category changes so a stale brand can't be searched.
-      if (field === 'categoryId') {
-        next.brand = '';
-      }
-      return next;
-    });
-  };
+  const update =
+    (field: keyof Draft) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setDraft((prev) => {
+        const next = { ...prev, [field]: value };
+        // Reset brand when category changes so a stale brand can't be searched.
+        if (field === 'categoryId') {
+          next.brand = '';
+        }
+        return next;
+      });
+    };
 
-  const submit = (e) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch({
       name: draft.name.trim() || undefined,
-      categoryId: draft.categoryId || undefined,
+      categoryId: draft.categoryId ? Number(draft.categoryId) : undefined,
       brand: draft.brand || undefined,
       color: draft.color || undefined,
     });
@@ -137,9 +150,5 @@ function SearchFilter({ onSearch }) {
     </Card>
   );
 }
-
-SearchFilter.propTypes = {
-  onSearch: PropTypes.func.isRequired,
-};
 
 export default SearchFilter;

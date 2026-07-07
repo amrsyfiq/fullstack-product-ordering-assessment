@@ -12,7 +12,7 @@ import OrderHistory from './components/OrderHistory';
 import { TABS } from './constants';
 
 function App() {
-  const [activeTab, setActiveTab] = useState(TABS.PRODUCTS);
+  const [activeTab, setActiveTab] = useState<string>(TABS.PRODUCTS);
 
   return (
     <Container fluid className="py-3">

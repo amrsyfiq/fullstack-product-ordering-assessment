@@ -1,18 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+
+interface PagerControlProps {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
 
 /**
  * Numbered pagination control matching the wireframe (1, 2, 3 ...).
  * Controlled: parent owns `page` and reacts to `onPageChange`.
  */
-function PagerControl({ page, totalPages, onPageChange }) {
+function PagerControl({ page, totalPages, onPageChange }: PagerControlProps) {
   if (!totalPages || totalPages <= 1) {
     return null;
   }
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  const go = (target) => {
+  const go = (target: number) => {
     if (target >= 1 && target <= totalPages && target !== page) {
       onPageChange(target);
     }
@@ -34,11 +39,5 @@ function PagerControl({ page, totalPages, onPageChange }) {
     </Pagination>
   );
 }
-
-PagerControl.propTypes = {
-  page: PropTypes.number.isRequired,
-  totalPages: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-};
 
 export default PagerControl;

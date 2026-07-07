@@ -1,12 +1,12 @@
 # Product Ordering — Fullstack Assessment
 
 A single-page web application with **Product Listing** and **Order History**, built
-with **React (Create React App) + reactstrap** on the frontend and **NestJS + TypeORM
-+ PostgreSQL** on the backend, communicating over REST.
+with **React (Create React App) + TypeScript + reactstrap** on the frontend and
+**NestJS + TypeORM + PostgreSQL** on the backend, communicating over REST.
 
 | Layer    | Stack |
 |----------|-------|
-| Frontend | React 18 (CRA), React Hooks, reactstrap, axios |
+| Frontend | React 18 (CRA) + TypeScript, React Hooks, reactstrap, axios |
 | Backend  | NestJS 10, TypeORM 0.3, class-validator |
 | Database | PostgreSQL 17 (via Docker Compose) |
 
@@ -44,11 +44,14 @@ with **React (Create React App) + reactstrap** on the frontend and **NestJS + Ty
 │   │   ├── data-source.ts       single TypeORM datasource (app + CLI + seed)
 │   │   └── main.ts
 │   └── .env.example
-├── frontend/           React (CRA) + reactstrap
+├── frontend/           React (CRA) + TypeScript + reactstrap
 │   └── src/
-│       ├── api/client.js         axios API client
+│       ├── types.ts              API contract types (mirror backend DTOs)
+│       ├── constants.ts          page sizes, order statuses, tab keys
+│       ├── api/client.ts         typed axios API client
+│       ├── hooks/                usePaginatedResource (generic paginated fetch)
 │       └── components/           SearchFilter, ProductListing, ProductCard,
-│                                 OrderHistory, PagerControl
+│                                 OrderHistory, PagerControl (.tsx)
 ├── db/                 Plain SQL exports (see db/README.md)
 │   ├── dump.sql        full schema + seed (single file)
 │   ├── schema.sql      schema only
@@ -211,6 +214,9 @@ Point `backend/.env` at your instance (`DB_HOST`, `DB_PORT`, `DB_USERNAME`,
 
 ## Code quality
 
+- **TypeScript end to end** — both the NestJS backend and the React frontend are
+  TypeScript. The frontend's `src/types.ts` mirrors the backend response DTOs, so
+  there is a single agreed shape per endpoint (`npm run typecheck` on the frontend).
 - **Lint & format** — both apps ship ESLint + Prettier configs.
   - Backend: `npm run lint`, `npm run format` (typescript-eslint + prettier).
   - Frontend: `npm run format` (CRA's `react-app` ESLint runs during `build`).
@@ -219,9 +225,9 @@ Point `backend/.env` at your instance (`DB_HOST`, `DB_PORT`, `DB_USERNAME`,
   configuration is missing or malformed.
 - **DTOs** — request/response shapes are explicit DTO classes (not leaked
   entities), which also drive the Swagger schema.
-- **Frontend** — shared `usePaginatedResource` hook removes duplication between
-  the two paginated views; components declare `propTypes`; magic values live in
-  `src/constants.js`.
+- **Frontend** — shared generic `usePaginatedResource<T>` hook removes duplication
+  between the two paginated views; component props are typed via interfaces; magic
+  values live in `src/constants.ts`.
 
 ## Notes
 

@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Button, Card, CardBody } from 'reactstrap';
+import { ProductListingItem } from '../types';
+
+interface ProductCardProps {
+  item: ProductListingItem;
+  onOrdered: (item: ProductListingItem) => void | Promise<void>;
+}
 
 /**
  * One product color variant. The Place Order button places the order directly
  * (no details page), per the wireframe note.
  */
-function ProductCard({ item, onOrdered }) {
+function ProductCard({ item, onOrdered }: ProductCardProps) {
   const [placing, setPlacing] = useState(false);
 
   const handleOrder = async () => {
@@ -38,15 +43,5 @@ function ProductCard({ item, onOrdered }) {
     </Card>
   );
 }
-
-ProductCard.propTypes = {
-  item: PropTypes.shape({
-    productColorId: PropTypes.number.isRequired,
-    productName: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-  }).isRequired,
-  onOrdered: PropTypes.func.isRequired,
-};
 
 export default ProductCard;

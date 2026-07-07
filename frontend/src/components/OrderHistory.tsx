@@ -4,8 +4,9 @@ import PagerControl from './PagerControl';
 import { getOrders, updateOrderStatus } from '../api/client';
 import { usePaginatedResource } from '../hooks/usePaginatedResource';
 import { ORDER_STATUS, ORDERS_PAGE_SIZE } from '../constants';
+import { Order } from '../types';
 
-function formatDateTime(iso) {
+function formatDateTime(iso: string): string {
   const date = new Date(iso);
   return date.toLocaleString('en-GB', {
     year: 'numeric',
@@ -21,21 +22,21 @@ function formatDateTime(iso) {
  * orders.
  */
 function OrderHistory() {
-  const [busyId, setBusyId] = useState(null);
+  const [busyId, setBusyId] = useState<number | null>(null);
 
   const { page, setPage, result, loading, error, setError, reload } =
-    usePaginatedResource(
+    usePaginatedResource<Order>(
       getOrders,
       ORDERS_PAGE_SIZE,
       'Failed to load orders. Is the API running?',
     );
 
-  const handleComplete = async (order) => {
+  const handleComplete = async (order: Order) => {
     setBusyId(order.id);
     try {
       await updateOrderStatus(order.id, ORDER_STATUS.COMPLETED);
       await reload();
-    } catch (e) {
+    } catch {
       setError('Failed to update order status.');
     } finally {
       setBusyId(null);
@@ -70,7 +71,7 @@ function OrderHistory() {
           <tbody>
             {result.data.length === 0 ? (
               <tr>
-                <td colSpan="7" className="text-center text-muted">
+                <td colSpan={7} className="text-center text-muted">
                   No orders yet.
                 </td>
               </tr>

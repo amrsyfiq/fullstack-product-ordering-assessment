@@ -6,33 +6,34 @@ import PagerControl from './PagerControl';
 import { getProducts, placeOrder } from '../api/client';
 import { usePaginatedResource } from '../hooks/usePaginatedResource';
 import { PRODUCTS_PAGE_SIZE } from '../constants';
+import { PageParams, ProductFilters, ProductListingItem } from '../types';
 
 /**
  * Product Listing tab: search filter + paginated grid of product color cards.
  */
 function ProductListing() {
-  const [criteria, setCriteria] = useState({});
+  const [criteria, setCriteria] = useState<ProductFilters>({});
   const [notice, setNotice] = useState('');
 
   // Re-created only when the search criteria change, which the hook watches.
   const fetcher = useCallback(
-    (params) => getProducts({ ...criteria, ...params }),
+    (params: PageParams) => getProducts({ ...criteria, ...params }),
     [criteria],
   );
 
   const { page, setPage, result, loading, error, setError } =
-    usePaginatedResource(
+    usePaginatedResource<ProductListingItem>(
       fetcher,
       PRODUCTS_PAGE_SIZE,
       'Failed to load products. Is the API running?',
     );
 
-  const handleSearch = (newCriteria) => {
+  const handleSearch = (newCriteria: ProductFilters) => {
     setPage(1);
     setCriteria(newCriteria);
   };
 
-  const handleOrder = async (item) => {
+  const handleOrder = async (item: ProductListingItem) => {
     setNotice('');
     setError('');
     try {
@@ -40,7 +41,7 @@ function ProductListing() {
       setNotice(
         `Order ${order.orderNumber} placed for ${item.productName} (${item.color}).`,
       );
-    } catch (e) {
+    } catch {
       setError('Failed to place order. Please try again.');
     }
   };

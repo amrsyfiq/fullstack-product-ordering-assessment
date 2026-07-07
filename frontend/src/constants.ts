@@ -6,9 +6,9 @@ export const ORDERS_PAGE_SIZE = 10;
 export const ORDER_STATUS = {
   OPEN: 'Open',
   COMPLETED: 'Completed',
-};
+} as const;
 
 export const TABS = {
   PRODUCTS: 'products',
   ORDERS: 'orders',
-};
+} as const;
