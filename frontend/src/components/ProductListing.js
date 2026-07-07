@@ -1,43 +1,31 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Col, Row, Spinner } from 'reactstrap';
 import SearchFilter from './SearchFilter';
 import ProductCard from './ProductCard';
 import PagerControl from './PagerControl';
 import { getProducts, placeOrder } from '../api/client';
-
-const PAGE_SIZE = 8;
+import { usePaginatedResource } from '../hooks/usePaginatedResource';
+import { PRODUCTS_PAGE_SIZE } from '../constants';
 
 /**
  * Product Listing tab: search filter + paginated grid of product color cards.
  */
 function ProductListing() {
   const [criteria, setCriteria] = useState({});
-  const [page, setPage] = useState(1);
-  const [result, setResult] = useState({ data: [], totalPages: 1, total: 0 });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await getProducts({
-        ...criteria,
-        page,
-        limit: PAGE_SIZE,
-      });
-      setResult(data);
-    } catch (e) {
-      setError('Failed to load products. Is the API running?');
-    } finally {
-      setLoading(false);
-    }
-  }, [criteria, page]);
+  // Re-created only when the search criteria change, which the hook watches.
+  const fetcher = useCallback(
+    (params) => getProducts({ ...criteria, ...params }),
+    [criteria],
+  );
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  const { page, setPage, result, loading, error, setError } =
+    usePaginatedResource(
+      fetcher,
+      PRODUCTS_PAGE_SIZE,
+      'Failed to load products. Is the API running?',
+    );
 
   const handleSearch = (newCriteria) => {
     setPage(1);

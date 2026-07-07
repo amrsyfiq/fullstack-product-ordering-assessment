@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, Badge, Button, Spinner, Table } from 'reactstrap';
 import PagerControl from './PagerControl';
 import { getOrders, updateOrderStatus } from '../api/client';
-
-const PAGE_SIZE = 10;
+import { usePaginatedResource } from '../hooks/usePaginatedResource';
+import { ORDER_STATUS, ORDERS_PAGE_SIZE } from '../constants';
 
 function formatDateTime(iso) {
-  const d = new Date(iso);
-  return d.toLocaleString('en-GB', {
+  const date = new Date(iso);
+  return date.toLocaleString('en-GB', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -21,34 +21,20 @@ function formatDateTime(iso) {
  * orders.
  */
 function OrderHistory() {
-  const [page, setPage] = useState(1);
-  const [result, setResult] = useState({ data: [], totalPages: 1, total: 0 });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await getOrders({ page, limit: PAGE_SIZE });
-      setResult(data);
-    } catch (e) {
-      setError('Failed to load orders. Is the API running?');
-    } finally {
-      setLoading(false);
-    }
-  }, [page]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
+  const { page, setPage, result, loading, error, setError, reload } =
+    usePaginatedResource(
+      getOrders,
+      ORDERS_PAGE_SIZE,
+      'Failed to load orders. Is the API running?',
+    );
 
   const handleComplete = async (order) => {
     setBusyId(order.id);
     try {
-      await updateOrderStatus(order.id, 'Completed');
-      await load();
+      await updateOrderStatus(order.id, ORDER_STATUS.COMPLETED);
+      await reload();
     } catch (e) {
       setError('Failed to update order status.');
     } finally {
@@ -98,7 +84,9 @@ function OrderHistory() {
                   <td>
                     <Badge
                       color={
-                        order.status === 'Completed' ? 'success' : 'secondary'
+                        order.status === ORDER_STATUS.COMPLETED
+                          ? 'success'
+                          : 'secondary'
                       }
                     >
                       {order.status}
@@ -106,7 +94,7 @@ function OrderHistory() {
                   </td>
                   <td>{formatDateTime(order.createdAt)}</td>
                   <td>
-                    {order.status === 'Open' && (
+                    {order.status === ORDER_STATUS.OPEN && (
                       <Button
                         color="primary"
                         size="sm"

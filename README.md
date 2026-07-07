@@ -88,6 +88,9 @@ npm run db:setup      # runs migrations, then seeds the database
 npm run start         # API on http://localhost:3001/api
 ```
 
+Interactive API docs (Swagger UI) are then available at
+**http://localhost:3001/api/docs** (OpenAPI JSON at `/api/docs-json`).
+
 `db:setup` = `migration:run` + `seed`. Run them separately if you prefer:
 
 ```bash
@@ -127,7 +130,7 @@ enforced — these exist for completeness and can be used if auth is added later
 
 ## REST API
 
-Base URL: `http://localhost:3001/api`
+Base URL: `http://localhost:3001/api` — full interactive docs at `/api/docs` (Swagger).
 
 | Method | Path                   | Description |
 |--------|------------------------|-------------|
@@ -205,6 +208,20 @@ Point `backend/.env` at your instance (`DB_HOST`, `DB_PORT`, `DB_USERNAME`,
 `DB_PASSWORD`, `DB_DATABASE`), create the database, then run `npm run db:setup`.
 
 ---
+
+## Code quality
+
+- **Lint & format** — both apps ship ESLint + Prettier configs.
+  - Backend: `npm run lint`, `npm run format` (typescript-eslint + prettier).
+  - Frontend: `npm run format` (CRA's `react-app` ESLint runs during `build`).
+- **Typed config** — environment variables are validated at startup
+  (`src/config/env.validation.ts`); the app fails fast with a clear message if
+  configuration is missing or malformed.
+- **DTOs** — request/response shapes are explicit DTO classes (not leaked
+  entities), which also drive the Swagger schema.
+- **Frontend** — shared `usePaginatedResource` hook removes duplication between
+  the two paginated views; components declare `propTypes`; magic values live in
+  `src/constants.js`.
 
 ## Notes
 

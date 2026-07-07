@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Category } from './category.entity';
 import { Product } from './product.entity';
 
@@ -15,12 +16,15 @@ import { Product } from './product.entity';
  */
 @Entity({ name: 'brand' })
 export class Brand {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ example: 'Apple' })
   @Column({ type: 'varchar', length: 100 })
   name: string;
 
+  @ApiProperty({ example: 1 })
   @Column({ name: 'category_id' })
   categoryId: number;
 

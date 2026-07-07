@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
@@ -14,10 +15,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"src/**/*.{js,css}\"",
+    "format:check": "prettier --check \"src/**/*.{js,css}\""
   },
   "eslintConfig": {
     "extends": ["react-app"]
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
   },
   "browserslist": {
     "production": [">0.2%", "not dead", "not op_mini all"],

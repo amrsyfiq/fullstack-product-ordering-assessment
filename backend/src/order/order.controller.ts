@@ -8,36 +8,45 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { OrderService, OrderHistoryItem } from './order.service';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { OrderHistoryItemDto } from './dto/order-history-item.dto';
+import { PaginatedOrdersDto } from './dto/paginated-orders.dto';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
-import { Paginated } from '../common/paginated';
 
+@ApiTags('orders')
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  /** Place an order directly (triggered by the Place Order button). */
   @Post()
-  create(@Body() dto: CreateOrderDto): Promise<OrderHistoryItem> {
+  @ApiOperation({ summary: 'Place an order (Place Order button).' })
+  @ApiCreatedResponse({ type: OrderHistoryItemDto })
+  create(@Body() dto: CreateOrderDto): Promise<OrderHistoryItemDto> {
     return this.orderService.create(dto);
   }
 
-  /** Order history, most recent first, paginated. */
   @Get()
-  findAll(
-    @Query() query: PaginationQueryDto,
-  ): Promise<Paginated<OrderHistoryItem>> {
+  @ApiOperation({ summary: 'Order history, most recent first, paginated.' })
+  @ApiOkResponse({ type: PaginatedOrdersDto })
+  findAll(@Query() query: PaginationQueryDto): Promise<PaginatedOrdersDto> {
     return this.orderService.findAll(query);
   }
 
-  /** Update an order's status (e.g. the "Set Completed" action). */
   @Patch(':id/status')
+  @ApiOperation({ summary: "Update an order's status (e.g. Set Completed)." })
+  @ApiOkResponse({ type: OrderHistoryItemDto })
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateOrderStatusDto,
-  ): Promise<OrderHistoryItem> {
+  ): Promise<OrderHistoryItemDto> {
     return this.orderService.updateStatus(id, dto);
   }
 }

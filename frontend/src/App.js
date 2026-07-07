@@ -9,11 +9,7 @@ import {
 } from 'reactstrap';
 import ProductListing from './components/ProductListing';
 import OrderHistory from './components/OrderHistory';
-
-const TABS = {
-  PRODUCTS: 'products',
-  ORDERS: 'orders',
-};
+import { TABS } from './constants';
 
 function App() {
   const [activeTab, setActiveTab] = useState(TABS.PRODUCTS);

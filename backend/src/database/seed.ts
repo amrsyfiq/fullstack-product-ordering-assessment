@@ -31,15 +31,31 @@ const CATALOGUE: CategorySeed[] = [
       {
         name: 'Apple',
         products: [
-          { name: 'iPhone 8', price: 1230, colors: ['Green', 'Red', 'Blue', 'Yellow'] },
-          { name: 'iPhone 9', price: 2230, colors: ['Black', 'Silver', 'Blue', 'Green'] },
+          {
+            name: 'iPhone 8',
+            price: 1230,
+            colors: ['Green', 'Red', 'Blue', 'Yellow'],
+          },
+          {
+            name: 'iPhone 9',
+            price: 2230,
+            colors: ['Black', 'Silver', 'Blue', 'Green'],
+          },
         ],
       },
       {
         name: 'Samsung',
         products: [
-          { name: 'Galaxy S22', price: 3200, colors: ['Black', 'White', 'Green'] },
-          { name: 'Galaxy S23', price: 4200, colors: ['Black', 'Cream', 'Green', 'Lavender'] },
+          {
+            name: 'Galaxy S22',
+            price: 3200,
+            colors: ['Black', 'White', 'Green'],
+          },
+          {
+            name: 'Galaxy S23',
+            price: 4200,
+            colors: ['Black', 'Cream', 'Green', 'Lavender'],
+          },
         ],
       },
     ],
@@ -51,13 +67,21 @@ const CATALOGUE: CategorySeed[] = [
         name: 'Apple',
         products: [
           { name: 'iPad 9', price: 1500, colors: ['Silver', 'Space Gray'] },
-          { name: 'iPad Air', price: 2500, colors: ['Blue', 'Pink', 'Purple', 'Starlight'] },
+          {
+            name: 'iPad Air',
+            price: 2500,
+            colors: ['Blue', 'Pink', 'Purple', 'Starlight'],
+          },
         ],
       },
       {
         name: 'Samsung',
         products: [
-          { name: 'Galaxy Tab S8', price: 3000, colors: ['Graphite', 'Silver', 'Pink Gold'] },
+          {
+            name: 'Galaxy Tab S8',
+            price: 3000,
+            colors: ['Graphite', 'Silver', 'Pink Gold'],
+          },
         ],
       },
     ],
@@ -71,8 +95,18 @@ const CATALOGUE: CategorySeed[] = [
  * keeping them readable lets a reviewer use the documented credentials directly.
  */
 const USERS: Array<Pick<User, 'name' | 'email' | 'password' | 'role'>> = [
-  { name: 'Admin User', email: 'admin@example.com', password: 'Admin@123', role: UserRole.ADMIN },
-  { name: 'Customer User', email: 'customer@example.com', password: 'Customer@123', role: UserRole.CUSTOMER },
+  {
+    name: 'Admin User',
+    email: 'admin@example.com',
+    password: 'Admin@123',
+    role: UserRole.ADMIN,
+  },
+  {
+    name: 'Customer User',
+    email: 'customer@example.com',
+    password: 'Customer@123',
+    role: UserRole.CUSTOMER,
+  },
 ];
 
 function padProductCode(sequence: number): string {
@@ -141,7 +175,10 @@ async function seed(): Promise<void> {
     const sampleOrders = [
       { color: savedColors[2], status: OrderStatus.COMPLETED }, // iPhone 8 Blue
       { color: savedColors[3], status: OrderStatus.OPEN }, // iPhone 8 Yellow
-      { color: savedColors.find((c) => c.name === 'Silver')!, status: OrderStatus.OPEN },
+      {
+        color: savedColors.find((c) => c.name === 'Silver')!,
+        status: OrderStatus.OPEN,
+      },
     ];
     for (const sample of sampleOrders) {
       const order = await manager.save(

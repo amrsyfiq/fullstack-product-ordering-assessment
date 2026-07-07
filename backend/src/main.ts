@@ -1,14 +1,18 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { EnvironmentVariables } from './config/env.validation';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const config = app.get(ConfigService<EnvironmentVariables, true>);
 
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    origin: config.get('CORS_ORIGIN', { infer: true }),
   });
 
   app.useGlobalPipes(
@@ -19,9 +23,18 @@ async function bootstrap() {
     }),
   );
 
-  const port = parseInt(process.env.PORT ?? '3001', 10);
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Product Ordering API')
+    .setDescription('REST API for the product listing and order history app.')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, document);
+
+  const port = config.get('PORT', { infer: true });
   await app.listen(port);
-  // eslint-disable-next-line no-console
-  console.log(`API listening on http://localhost:${port}/api`);
+
+  Logger.log(`API listening on http://localhost:${port}/api`, 'Bootstrap');
+  Logger.log(`Swagger docs on http://localhost:${port}/api/docs`, 'Bootstrap');
 }
 bootstrap();

@@ -1,26 +1,13 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Order, OrderStatus } from '../entities/order.entity';
 import { ProductColor } from '../entities/product-color.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { OrderHistoryItemDto } from './dto/order-history-item.dto';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
 import { Paginated, paginate } from '../common/paginated';
-
-/** Row shape for the Order History table. */
-export interface OrderHistoryItem {
-  id: number;
-  orderNumber: string;
-  productCode: string;
-  productName: string;
-  color: string;
-  status: OrderStatus;
-  createdAt: Date;
-}
 
 @Injectable()
 export class OrderService {
@@ -36,7 +23,7 @@ export class OrderService {
    * inside a transaction, which keeps it unique and gap-consistent without a
    * separate counter table or a race condition.
    */
-  async create(dto: CreateOrderDto): Promise<OrderHistoryItem> {
+  async create(dto: CreateOrderDto): Promise<OrderHistoryItemDto> {
     const orderId = await this.dataSource.transaction(async (manager) => {
       const color = await manager.findOne(ProductColor, {
         where: { id: dto.productColorId },
@@ -64,7 +51,7 @@ export class OrderService {
 
   async findAll(
     query: PaginationQueryDto,
-  ): Promise<Paginated<OrderHistoryItem>> {
+  ): Promise<Paginated<OrderHistoryItemDto>> {
     const page = query.page && query.page > 0 ? query.page : 1;
     const limit = query.limit && query.limit > 0 ? query.limit : 10;
 
@@ -81,7 +68,7 @@ export class OrderService {
   async updateStatus(
     id: number,
     dto: UpdateOrderStatusDto,
-  ): Promise<OrderHistoryItem> {
+  ): Promise<OrderHistoryItemDto> {
     const order = await this.orderRepo.findOne({ where: { id } });
     if (!order) {
       throw new NotFoundException(`Order ${id} not found`);
@@ -91,7 +78,7 @@ export class OrderService {
     return this.findOneMapped(id);
   }
 
-  private async findOneMapped(id: number): Promise<OrderHistoryItem> {
+  private async findOneMapped(id: number): Promise<OrderHistoryItemDto> {
     const order = await this.orderRepo.findOne({
       where: { id },
       relations: { productColor: { product: true } },
@@ -106,7 +93,7 @@ export class OrderService {
     return `MY${id.toString().padStart(6, '0')}`;
   }
 
-  private static toHistoryItem(order: Order): OrderHistoryItem {
+  private static toHistoryItem(order: Order): OrderHistoryItemDto {
     return {
       id: order.id,
       orderNumber: order.orderNumber,

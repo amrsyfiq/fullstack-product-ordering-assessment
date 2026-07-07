@@ -3,19 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductColor } from '../entities/product-color.entity';
 import { QueryProductsDto } from './dto/query-products.dto';
+import { ProductListingItemDto } from './dto/product-listing-item.dto';
 import { Paginated, paginate } from '../common/paginated';
-
-/** One card in the product listing = one product color variant. */
-export interface ProductListingItem {
-  productColorId: number;
-  productId: number;
-  productCode: string;
-  productName: string;
-  color: string;
-  price: number;
-  brand: string;
-  category: string;
-}
 
 @Injectable()
 export class ProductService {
@@ -26,7 +15,7 @@ export class ProductService {
 
   async findListing(
     query: QueryProductsDto,
-  ): Promise<Paginated<ProductListingItem>> {
+  ): Promise<Paginated<ProductListingItemDto>> {
     const page = query.page && query.page > 0 ? query.page : 1;
     const limit = query.limit && query.limit > 0 ? query.limit : 8;
 
@@ -81,7 +70,7 @@ export class ProductService {
         category: string;
       }>();
 
-    const data: ProductListingItem[] = rawRows.map((row) => ({
+    const data: ProductListingItemDto[] = rawRows.map((row) => ({
       productColorId: Number(row.productColorId),
       productId: Number(row.productId),
       productCode: row.productCode,

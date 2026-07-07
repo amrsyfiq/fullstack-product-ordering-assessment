@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   Card,
@@ -24,14 +25,20 @@ function SearchFilter({ onSearch }) {
 
   // Load the static dropdown options once.
   useEffect(() => {
-    getCategories().then(setCategories).catch(() => setCategories([]));
-    getColors().then(setColors).catch(() => setColors([]));
+    getCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
+    getColors()
+      .then(setColors)
+      .catch(() => setColors([]));
   }, []);
 
   // Brands depend on the selected category.
   useEffect(() => {
     const categoryId = draft.categoryId || undefined;
-    getBrands(categoryId).then(setBrands).catch(() => setBrands([]));
+    getBrands(categoryId)
+      .then(setBrands)
+      .catch(() => setBrands([]));
   }, [draft.categoryId]);
 
   const update = (field) => (e) => {
@@ -130,5 +137,9 @@ function SearchFilter({ onSearch }) {
     </Card>
   );
 }
+
+SearchFilter.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+};
 
 export default SearchFilter;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 /**
@@ -33,5 +34,11 @@ function PagerControl({ page, totalPages, onPageChange }) {
     </Pagination>
   );
 }
+
+PagerControl.propTypes = {
+  page: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+};
 
 export default PagerControl;

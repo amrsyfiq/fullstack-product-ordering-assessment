@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Card, CardBody } from 'reactstrap';
 
 /**
@@ -37,5 +38,15 @@ function ProductCard({ item, onOrdered }) {
     </Card>
   );
 }
+
+ProductCard.propTypes = {
+  item: PropTypes.shape({
+    productColorId: PropTypes.number.isRequired,
+    productName: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+  }).isRequired,
+  onOrdered: PropTypes.func.isRequired,
+};
 
 export default ProductCard;
