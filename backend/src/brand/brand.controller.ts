@@ -1,12 +1,8 @@
-import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
 import { Brand } from '../entities/brand.entity';
+import { QueryBrandsDto } from './dto/query-brands.dto';
 
 @ApiTags('brands')
 @Controller('brands')
@@ -17,12 +13,8 @@ export class BrandController {
   @ApiOperation({
     summary: 'Brands, optionally scoped to a category (Brand filter dropdown).',
   })
-  @ApiQuery({ name: 'categoryId', required: false, type: Number })
   @ApiOkResponse({ type: [Brand] })
-  findAll(
-    @Query('categoryId', new ParseIntPipe({ optional: true }))
-    categoryId?: number,
-  ): Promise<Brand[]> {
-    return this.brandService.findAll(categoryId);
+  findAll(@Query() query: QueryBrandsDto): Promise<Brand[]> {
+    return this.brandService.findAll(query.categoryId);
   }
 }
