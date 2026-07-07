@@ -12,7 +12,7 @@
     "migration:generate": "npm run typeorm -- migration:generate",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
-    "seed": "ts-node -r tsconfig-paths/register src/database/seed.ts",
+    "seed": "ts-node src/database/seed.ts",
     "db:setup": "npm run migration:run && npm run seed",
     "lint": "eslint \"src/**/*.ts\" --max-warnings 0",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -45,7 +45,6 @@
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3"
   }
 }
