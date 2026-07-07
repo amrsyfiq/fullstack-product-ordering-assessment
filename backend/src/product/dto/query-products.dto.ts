@@ -21,11 +21,10 @@ export class QueryProductsDto {
   @IsInt()
   categoryId?: number;
 
-  @ApiPropertyOptional({ example: 1 })
+  @ApiPropertyOptional({ description: 'Brand name.', example: 'Apple' })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  brandId?: number;
+  @IsString()
+  brand?: string;
 
   @ApiPropertyOptional({ description: 'Color name.', example: 'Blue' })
   @IsOptional()

@@ -135,9 +135,9 @@ Base URL: `http://localhost:3001/api` — full interactive docs at `/api/docs` (
 | Method | Path                   | Description |
 |--------|------------------------|-------------|
 | GET    | `/categories`          | All categories (Category dropdown) |
-| GET    | `/brands?categoryId=`  | Brands, optionally scoped to a category (Brand dropdown) |
+| GET    | `/brands?categoryId=`  | Distinct brand names, optionally scoped to a category (Brand dropdown) |
 | GET    | `/colors`              | Distinct colour names (Colour dropdown) |
-| GET    | `/products`            | Product-colour listing. Query: `name`, `categoryId`, `brandId`, `color`, `page`, `limit` |
+| GET    | `/products`            | Product-colour listing. Query: `name`, `categoryId`, `brand`, `color`, `page`, `limit` |
 | POST   | `/orders`              | Place an order. Body: `{ "productColorId": number }` |
 | GET    | `/orders?page=&limit=` | Order history, newest first |
 | PATCH  | `/orders/:id/status`   | Update status. Body: `{ "status": "Open" \| "Completed" }` |

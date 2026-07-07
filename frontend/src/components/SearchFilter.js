@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 import { getBrands, getCategories, getColors } from '../api/client';
 
-const EMPTY = { name: '', categoryId: '', brandId: '', color: '' };
+const EMPTY = { name: '', categoryId: '', brand: '', color: '' };
 
 /**
  * Left hand search filter. Holds its own draft state and only lifts the
@@ -47,7 +47,7 @@ function SearchFilter({ onSearch }) {
       const next = { ...prev, [field]: value };
       // Reset brand when category changes so a stale brand can't be searched.
       if (field === 'categoryId') {
-        next.brandId = '';
+        next.brand = '';
       }
       return next;
     });
@@ -58,7 +58,7 @@ function SearchFilter({ onSearch }) {
     onSearch({
       name: draft.name.trim() || undefined,
       categoryId: draft.categoryId || undefined,
-      brandId: draft.brandId || undefined,
+      brand: draft.brand || undefined,
       color: draft.color || undefined,
     });
   };
@@ -100,13 +100,13 @@ function SearchFilter({ onSearch }) {
             <Input
               id="filter-brand"
               type="select"
-              value={draft.brandId}
-              onChange={update('brandId')}
+              value={draft.brand}
+              onChange={update('brand')}
             >
               <option value="">Select Brand</option>
-              {brands.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
+              {brands.map((name) => (
+                <option key={name} value={name}>
+                  {name}
                 </option>
               ))}
             </Input>

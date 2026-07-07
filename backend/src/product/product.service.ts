@@ -43,8 +43,8 @@ export class ProductService {
         categoryId: query.categoryId,
       });
     }
-    if (query.brandId) {
-      qb.andWhere('brand.id = :brandId', { brandId: query.brandId });
+    if (query.brand) {
+      qb.andWhere('brand.name = :brand', { brand: query.brand });
     }
     if (query.color) {
       qb.andWhere('color.name = :color', { color: query.color });
