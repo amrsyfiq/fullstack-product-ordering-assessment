@@ -13,6 +13,9 @@
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
+    // TypeORM entity fields are assigned by the ORM (via decorators), not in a
+    // constructor, so we opt out of requiring initializers for them.
+    "strictPropertyInitialization": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
